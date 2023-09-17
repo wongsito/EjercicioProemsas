@@ -1,0 +1,144 @@
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Examen Diagnóstico</title>
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css" integrity="sha384-xOolHFLEh07PJGoPkLv1IbcEPTNtaed2xpHsD9ESMhqIYd0nLMwNLD69Npy4HI+N" crossorigin="anonymous">
+        <style>
+            .container {
+                margin-top: 20px;
+            }
+        </style>
+    </head>
+    <body>
+        <div class="container"></div>
+
+        <script>
+            // Ejercicio 1: Promesas Encadenadas
+            function promesasEncadenadas() {
+                return new Promise((resolve, reject) => {
+                    setTimeout(() => {
+                        const numeroAleatorio = Math.floor(Math.random() * 100) + 1;
+                        resolve(numeroAleatorio);
+                    }, 2000);
+                }).then((numero) => {
+                    return new Promise((resolve, reject) => {
+                        setTimeout(() => {
+                            const resultado = numero * numero;
+                            resolve(resultado);
+                        }, 3000);
+                    });
+                }).then((resultado) => {
+                    return new Promise((resolve, reject) => {
+                        setTimeout(() => {
+                            const raizCuadrada = Math.sqrt(resultado);
+                            resolve(raizCuadrada);
+                        }, 1000);
+                    });
+                });
+            }
+
+            promesasEncadenadas().then((resultadoFinal) => {
+                console.log('Resultado Final:', resultadoFinal);
+            });
+
+            // Ejercicio 2: Promesa de Múltiples Solicitudes
+            function solicitudesMultiples(urls) {
+                const promesas = urls.map((url) => {
+                    return fetch(url).then((response) => response.json());
+                });
+
+                return Promise.all(promesas);
+            }
+
+            const urls = ['https://jsonplaceholder.typicode.com/users', 'https://jsonplaceholder.typicode.com/users'];
+            solicitudesMultiples(urls).then((resultados) => {
+                console.log('Resultados de las solicitudes:', resultados);
+            });
+
+            // Ejercicio 3: Promesas Paralelas
+            function promesasParalelas(funciones) {
+                const promesas = funciones.map((funcion) => funcion());
+
+                return Promise.all(promesas);
+            }
+
+            function funcionPromesa1() {
+                return new Promise((resolve, reject) => {
+                    setTimeout(() => {
+                        resolve('Resultado 1');
+                    }, 2000);
+                });
+            }
+
+            function funcionPromesa2() {
+                return new Promise((resolve, reject) => {
+                    setTimeout(() => {
+                        resolve('Resultado 2');
+                    }, 3000);
+                });
+            }
+
+            const funciones = [funcionPromesa1, funcionPromesa2];
+            promesasParalelas(funciones).then((resultados) => {
+                console.log('Resultados de promesas paralelas:', resultados);
+            });
+
+            // Ejercicio 4: Promesas en Cadena con Retraso
+            function promesasEnCadenaConRetraso(n) {
+                const promesas = [];
+
+                for (let i = 1; i <= n; i++) {
+                    promesas.push(new Promise((resolve, reject) => {
+                        setTimeout(() => {
+                            console.log('Número en bucle:', i);
+                            resolve(i);
+                        }, i * 1000);
+                    }));
+                }
+
+                return Promise.all(promesas).then(() => {
+                    return new Promise((resolve, reject) => {
+                        setTimeout(() => {
+                            resolve('Todas las promesas se resolvieron');
+                        }, n * 1000);
+                    });
+                });
+            }
+
+            promesasEnCadenaConRetraso(5).then((mensaje) => {
+                console.log(mensaje);
+            });
+
+            // Ejercicio 5: Promesa con Cancelación
+            function promesaConCancelacion() {
+                return new Promise((resolve, reject) => {
+                    const timeoutId = setTimeout(() => {
+                        resolve('La promesa se ha completado después de 5 segundos');
+                    }, 5000);
+
+                    const cancel = () => {
+                        clearTimeout(timeoutId);
+                        reject('Promesa cancelada');
+                    };
+
+                    promesaConCancelacion.cancel = cancel;
+                });
+            }
+
+            const miPromesa = promesaConCancelacion();
+
+            miPromesa.then((resultado) => {
+                console.log(resultado);
+            }).catch((error) => {
+                console.error(error);
+            });
+
+            //Asignar cancelacion a un boton en Front-End
+            //miPromesa.cancel();
+        </script>
+
+        <script src="https://cdn.jsdelivr.net/npm/jquery@3.5.1/dist/jquery.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-Fy6S3B9q64WdZWQUiU+q4/2Lc9npb8tCaSX9FK7E8HnRr0Jz8D6OP9dO5Vg3Q9ct" crossorigin="anonymous"></script>
+    </body>
+</html>
